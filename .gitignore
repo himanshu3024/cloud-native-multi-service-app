@@ -102,6 +102,7 @@ charts/*.tgz
 
 # Secrets
 secrets.yaml
+!k8s-manifests/secrets-template.yaml
 *.key
 *.pem
 *.crt
@@ -109,3 +110,6 @@ secrets.yaml
 # Local development
 .local/
 local/ 
+
+
+aks-kubeconfig.yaml

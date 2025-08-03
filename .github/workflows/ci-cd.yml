@@ -131,7 +131,7 @@ jobs:
     - name: Deploy to Kubernetes
       run: |
         kubectl apply -f k8s-manifests/namespace.yaml
-        kubectl apply -f k8s-manifests/secrets.yaml
+        kubectl apply -f k8s-manifests/secrets-template.yaml
         kubectl apply -f k8s-manifests/configmap.yaml
         kubectl apply -f k8s-manifests/postgres-deployment.yaml
         kubectl apply -f k8s-manifests/backend-deployment.yaml
