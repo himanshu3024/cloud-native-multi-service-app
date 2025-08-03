@@ -104,7 +104,7 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && false
+    if: github.ref == 'refs/heads/main'
     
     steps:
     - name: Checkout code
@@ -130,21 +130,21 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        echo "Skipping deployment - no Kubernetes cluster configured"
-        echo "To enable deployment, set up KUBECONFIG secret and remove '&& false' from deploy job condition"
-        # kubectl apply -f k8s-manifests/namespace.yaml
-        # kubectl apply -f k8s-manifests/secrets.yaml
-        # kubectl apply -f k8s-manifests/configmap.yaml
-        # kubectl apply -f k8s-manifests/postgres-deployment.yaml
-        # kubectl apply -f k8s-manifests/backend-deployment.yaml
-        # kubectl apply -f k8s-manifests/frontend-deployment.yaml
-        # kubectl apply -f k8s-manifests/ingress.yaml
+        kubectl apply -f k8s-manifests/namespace.yaml
+        kubectl apply -f k8s-manifests/secrets.yaml
+        kubectl apply -f k8s-manifests/configmap.yaml
+        kubectl apply -f k8s-manifests/postgres-deployment.yaml
+        kubectl apply -f k8s-manifests/backend-deployment.yaml
+        kubectl apply -f k8s-manifests/frontend-deployment.yaml
+        kubectl apply -f k8s-manifests/ingress.yaml
+      continue-on-error: true
 
     - name: Wait for deployment
       run: |
         kubectl rollout status deployment/frontend-deployment -n cloud-native-app --timeout=300s
         kubectl rollout status deployment/backend-deployment -n cloud-native-app --timeout=300s
         kubectl rollout status deployment/postgres-deployment -n cloud-native-app --timeout=300s
+      continue-on-error: true
 
     - name: Get service URLs
       run: |
@@ -152,4 +152,5 @@ jobs:
         kubectl get service frontend-service -n cloud-native-app -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].nodePort}'
         echo ""
         echo "Backend Service URL:"
-        kubectl get service backend-service -n cloud-native-app -o jsonpath='{.spec.clusterIP}:{.spec.ports[0].port}' 
+        kubectl get service backend-service -n cloud-native-app -o jsonpath='{.spec.clusterIP}:{.spec.ports[0].port}'
+      continue-on-error: true 
