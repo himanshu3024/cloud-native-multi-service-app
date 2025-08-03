@@ -53,7 +53,7 @@ jobs:
     - name: Run backend tests
       run: |
         cd backend
-        python -m pytest tests/ || echo "No tests found"
+        python -m pytest test_app.py || echo "No tests found"
 
   build-and-push:
     needs: test
