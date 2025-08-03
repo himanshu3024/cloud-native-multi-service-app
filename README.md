@@ -99,28 +99,32 @@ cloud-native-multi-service-app/
 ## 🖼️ Screenshots
 
 ### **1. Kubernetes Deployment Status**
-![Kubernetes Deployment](Screenshots/1.%20kubectl-get-all.pngkubectl-get-all.png)
+![Kubernetes Deployment](Screenshots/1.%20kubectl-get-all.png)
 *All services successfully deployed and running in Kubernetes cluster*
 
 ### **2. Docker Images Built and Pushed**
-![Docker Images](Screenshots/2.%20docker-images.pngdocker-images.png)
+![Docker Images](Screenshots/2.%20docker-images.png)
 *Custom Docker images built and pushed to Docker Hub registry*
 
 ### **3. Application Running in Browser**
-![React Application](Screenshots/3.%20react-app-running.pngreact-app-running.png)
+![React Application](Screenshots/3.%20react-app-running.png)
 *Frontend application accessible and communicating with backend API*
 
 ### **4. CI/CD Pipeline Success**
-![GitHub Actions Workflow](Screenshots/workflow-run.png)
+![GitHub Actions Workflow](Screenshots/6.%20CICD-run.png)
 *Automated CI/CD pipeline successfully running tests, building Docker images, and pushing to registry*
 
 ### **5. Azure AKS Cluster Creation**
-![AKS Cluster Creation](Screenshots/4.%20aks-cluster-creation.png)
+![AKS Cluster Creation](Screenshots/4.%20aks-creation.png)
 *Azure Kubernetes Service (AKS) cluster successfully created with 2 worker nodes*
 
 ### **6. AKS Worker Nodes Running**
-![AKS Worker Nodes](Screenshots/5.%20aks-nodes-running.png)
+![AKS Worker Nodes](Screenshots/5.%20nodes%20running%20.png)
 *AKS cluster worker nodes successfully running and ready for application deployment*
+
+### **7. Monitoring**
+![Monitoring](Screenshots/7.%20Monitoring.png)
+*Resource and health monitoring dashboard*
 
 ---
 
@@ -285,4 +289,4 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed cloud deployment instructions.
 
 ---
 
-**⭐ Star this repository if you found it helpful!** 
+**⭐ Star this repository if you found it helpful!**
