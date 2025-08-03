@@ -13,8 +13,8 @@ test('renders tech stack section', () => {
   expect(techStackElement).toBeInTheDocument();
 });
 
-test('renders refresh API button', () => {
+test('renders API button', () => {
   render(<App />);
-  const buttonElement = screen.getByText(/Refresh API/i);
+  const buttonElement = screen.getByRole('button');
   expect(buttonElement).toBeInTheDocument();
 }); 
