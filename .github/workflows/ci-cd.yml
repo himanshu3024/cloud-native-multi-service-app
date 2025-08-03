@@ -104,7 +104,7 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && false
     
     steps:
     - name: Checkout code
@@ -130,13 +130,15 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        kubectl apply -f k8s-manifests/namespace.yaml
-        kubectl apply -f k8s-manifests/secrets.yaml
-        kubectl apply -f k8s-manifests/configmap.yaml
-        kubectl apply -f k8s-manifests/postgres-deployment.yaml
-        kubectl apply -f k8s-manifests/backend-deployment.yaml
-        kubectl apply -f k8s-manifests/frontend-deployment.yaml
-        kubectl apply -f k8s-manifests/ingress.yaml
+        echo "Skipping deployment - no Kubernetes cluster configured"
+        echo "To enable deployment, set up KUBECONFIG secret and remove '&& false' from deploy job condition"
+        # kubectl apply -f k8s-manifests/namespace.yaml
+        # kubectl apply -f k8s-manifests/secrets.yaml
+        # kubectl apply -f k8s-manifests/configmap.yaml
+        # kubectl apply -f k8s-manifests/postgres-deployment.yaml
+        # kubectl apply -f k8s-manifests/backend-deployment.yaml
+        # kubectl apply -f k8s-manifests/frontend-deployment.yaml
+        # kubectl apply -f k8s-manifests/ingress.yaml
 
     - name: Wait for deployment
       run: |

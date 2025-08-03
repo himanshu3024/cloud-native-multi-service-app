@@ -99,16 +99,20 @@ cloud-native-multi-service-app/
 ## 🖼️ Screenshots
 
 ### **1. Kubernetes Deployment Status**
-![Kubernetes Deployment](kubectl-get-all.png)
+![Kubernetes Deployment](Screenshots/kubectl-get-all.png)
 *All services successfully deployed and running in Kubernetes cluster*
 
 ### **2. Docker Images Built and Pushed**
-![Docker Images](docker-images.png)
+![Docker Images](Screenshots/docker-images.png)
 *Custom Docker images built and pushed to Docker Hub registry*
 
 ### **3. Application Running in Browser**
-![React Application](react-app-running.png)
+![React Application](Screenshots/react-app-running.png)
 *Frontend application accessible and communicating with backend API*
+
+### **4. CI/CD Pipeline Success**
+![GitHub Actions Workflow](Screenshots/workflow-run.png)
+*Automated CI/CD pipeline successfully running tests, building Docker images, and pushing to registry*
 
 ---
 
@@ -265,17 +269,11 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed cloud deployment instructions.
 
 ---
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
 ## 📞 Contact
 
-- **GitHub**: [@yourusername](https://github.com/yourusername)
-- **LinkedIn**: [Your LinkedIn Profile]
-- **Email**: your.email@example.com
+- **GitHub**: [@yourusername](https://github.com/himanshu3024)
+- **LinkedIn**: [Your LinkedIn Profile](https://www.linkedin.com/in/himanshu-gandhi-891204160/)
+- **Email**: gandhi111000@hotmail.com
 
 ---
 
