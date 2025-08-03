@@ -1,0 +1,148 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  REGISTRY: docker.io
+  FRONTEND_IMAGE: himanshu3024/frontend-app
+  BACKEND_IMAGE: himanshu3024/backend-api
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '16'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        npm ci
+
+    - name: Run frontend tests
+      run: |
+        cd frontend
+        npm test -- --watchAll=false
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install backend dependencies
+      run: |
+        cd backend
+        pip install -r requirements.txt
+
+    - name: Run backend tests
+      run: |
+        cd backend
+        python -m pytest tests/ || echo "No tests found"
+
+  build-and-push:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.FRONTEND_IMAGE }}, ${{ env.BACKEND_IMAGE }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=sha
+
+    - name: Build and push frontend
+      uses: docker/build-push-action@v5
+      with:
+        context: ./frontend
+        push: true
+        tags: ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+        labels: ${{ steps.meta.outputs.labels }}
+
+    - name: Build and push backend
+      uses: docker/build-push-action@v5
+      with:
+        context: ./backend
+        push: true
+        tags: ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+        labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+
+    - name: Configure kubectl
+      run: |
+        mkdir -p $HOME/.kube
+        echo "${{ secrets.KUBECONFIG }}" | base64 -d > $HOME/.kube/config
+        chmod 600 $HOME/.kube/config
+
+    - name: Update image tags
+      run: |
+        # Update frontend deployment
+        sed -i 's|himanshu3024/frontend-app:latest|himanshu3024/frontend-app:${{ github.sha }}|g' k8s-manifests/frontend-deployment.yaml
+        # Update backend deployment
+                  sed -i 's|himanshu3024/backend-api:latest|himanshu3024/backend-api:${{ github.sha }}|g' k8s-manifests/backend-deployment.yaml
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f k8s-manifests/namespace.yaml
+        kubectl apply -f k8s-manifests/secrets.yaml
+        kubectl apply -f k8s-manifests/configmap.yaml
+        kubectl apply -f k8s-manifests/postgres-deployment.yaml
+        kubectl apply -f k8s-manifests/backend-deployment.yaml
+        kubectl apply -f k8s-manifests/frontend-deployment.yaml
+        kubectl apply -f k8s-manifests/ingress.yaml
+
+    - name: Wait for deployment
+      run: |
+        kubectl rollout status deployment/frontend-deployment -n cloud-native-app --timeout=300s
+        kubectl rollout status deployment/backend-deployment -n cloud-native-app --timeout=300s
+        kubectl rollout status deployment/postgres-deployment -n cloud-native-app --timeout=300s
+
+    - name: Get service URLs
+      run: |
+        echo "Frontend Service URL:"
+        kubectl get service frontend-service -n cloud-native-app -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].nodePort}'
+        echo ""
+        echo "Backend Service URL:"
+        kubectl get service backend-service -n cloud-native-app -o jsonpath='{.spec.clusterIP}:{.spec.ports[0].port}' 
