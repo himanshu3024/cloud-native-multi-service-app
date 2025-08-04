@@ -305,16 +305,4 @@ I'm passionate about cloud-native development and always excited to learn new te
 
 ---
 
-## ⭐ **Support This Project**
-
-If you found this project helpful:
-- **Star the repository** ⭐
-- **Share with others** who might benefit
-- **Connect with me** to discuss cloud-native development
-- **Suggest improvements** or new features
-
----
-
-**Built with ❤️ and ☕ by Himanshu Gandhi**
-
-*This project demonstrates modern software development practices and cloud-native architecture. Perfect for learning, portfolio building, or understanding how real-world applications are built and deployed.* 
+**⭐ Star this repository if you found it helpful!**
